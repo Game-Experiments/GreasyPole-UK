@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greasy Pole: UK Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div id="notification-banner" class="notification-banner hidden"></div>
+        <div id="main-content"></div>
+    </div>
+
+    <div id="loading-overlay" class="hidden">
+        <p class="loading-message">Loading...</p>
+    </div>
+
+    <!-- Engine modules -->
+    <script src="src/engine/stat_manager.js"></script>
+    <script src="src/engine/scrutiny_logic.js"></script>
+    <script src="src/engine/turn_manager.js"></script>
+
+    <!-- Persistence -->
+    <script src="src/persistence/save_system.js"></script>
+
+    <!-- UI modules -->
+    <script src="src/ui/dashboard.js"></script>
+    <script src="src/ui/interaction_handler.js"></script>
+
+    <!-- Main game controller -->
+    <script>
+    /**
+     * Main game controller.
+     * Orchestrates all modules and manages the top-level game state machine.
+     */
+    (function () {
+        'use strict';
+
+        var _gameData = {
+            ranks: null,
+            events: null,
+            education: null,
+            etiquette: null
+        };
+
+        var _gameState = {
+            player: null,
+            phase: 'main_menu',    // main_menu | char_creation | gameplay | event | scrutiny | save_load | game_over
+            pendingEvent: null,
+            pendingEventType: null
+        };
+
+        /* -------------------------------------------------------
+           DATA LOADING
+           ------------------------------------------------------- */
+
+        /**
+         * Load all JSON data files.
+         * Falls back to inline defaults if fetch is unavailable (file:// protocol).
+         */
+        function loadData(callback) {
+            Dashboard.setLoading(true, 'Consulting the Civil Service Commission...');
+
+            var files = [
+                { key: 'ranks',     url: 'data/ranks.json' },
+                { key: 'events',    url: 'data/events.json' },
+                { key: 'education', url: 'data/education_tiers.json' },
+                { key: 'etiquette', url: 'data/etiquette_rules.json' }
+            ];
+
+            var loaded = 0;
+            var total = files.length;
+            var failed = false;
+
+            function onDone() {
+                if (failed) { return; }
+                loaded += 1;
+                if (loaded === total) {
+                    Dashboard.setLoading(false);
+                    callback();
+                }
+            }
+
+            files.forEach(function (file) {
+                fetch(file.url)
+                    .then(function (res) {
+                        if (!res.ok) { throw new Error('HTTP ' + res.status); }
+                        return res.json();
+                    })
+                    .then(function (data) {
+                        _gameData[file.key] = data;
+                        onDone();
+                    })
+                    .catch(function (err) {
+                        console.warn('Could not load ' + file.url + ': ' + err.message +
+                            '. Using inline fallback data.');
+                        _gameData[file.key] = getFallbackData(file.key);
+                        onDone();
+                    });
+            });
+        }
+
+        /**
+         * Minimal inline fallback data for environments where fetch is unavailable.
+         */
+        function getFallbackData(key) {
+            if (key === 'ranks') {
+                return [
+                    { id: 'junior_clerk', name: 'Junior Clerk (Class I)', salary: 200, increment: 20, maxSalary: 500, responsibilities: 'Copying, indexing, fetching messages.', promotionThreshold: 55, order: 0 },
+                    { id: 'senior_clerk', name: 'Senior Clerk', salary: 600, increment: 25, maxSalary: 800, responsibilities: 'Policy drafting, financial work, management.', promotionThreshold: 65, order: 1 },
+                    { id: 'principal_clerk', name: 'Principal Clerk', salary: 850, increment: 50, maxSalary: 1000, responsibilities: 'Managing a room or sub-department.', promotionThreshold: 74, order: 2 },
+                    { id: 'assistant_under_secretary', name: 'Assistant Under-Secretary', salary: 1200, increment: 0, maxSalary: 1500, responsibilities: 'Ministerial advice and implementation.', promotionThreshold: 83, order: 3 },
+                    { id: 'permanent_secretary', name: 'Permanent Secretary', salary: 2000, increment: 0, maxSalary: 2500, responsibilities: 'Departmental head; the club leader.', promotionThreshold: 9999, order: 4 }
+                ];
+            }
+            if (key === 'events') {
+                return {
+                    fixed: [
+                        {
+                            id: 'death_queen_victoria', year: 1901, season: 'Winter',
+                            title: 'Death of Queen Victoria',
+                            description: 'Her Majesty Queen Victoria has passed from this world.',
+                            flavourText: 'A black-edged memorandum circulates through every department.',
+                            choices: [
+                                { id: 'observe_mourning', text: 'Observe the full mourning period.', effects: { reputation: 5, relations: 3 }, flavorResponse: 'Your discretion is noted.' },
+                                { id: 'attend_gala', text: 'Attend a private gala.', effects: { reputation: -15, relations: -5, record: -5 }, flavorResponse: 'You are regarded as a man of questionable taste.' }
+                            ]
+                        }
+                    ],
+                    procedural: [
+                        {
+                            id: 'disgruntled_clerk', title: 'The Disgruntled Clerk', weight: 15,
+                            description: 'A subordinate has found an error in your ledger.',
+                            flavourText: 'Dobson clears his throat meaningfully.',
+                            choices: [
+                                { id: 'correct_error', text: 'Acknowledge and correct the error.', effects: { record: 5, relations: 3 }, flavorResponse: 'Your transparency is appreciated.' },
+                                { id: 'ignore_clerk', text: 'Dismiss him with studied incomprehension.', effects: { heat: 10, record: -5 }, flavorResponse: 'Dobson withdraws, unconvinced.' }
+                            ]
+                        },
+                        {
+                            id: 'etiquette_gaffe', title: 'The Etiquette Gaffe', weight: 12,
+                            description: 'You have worn a black tie to a white tie occasion.',
+                            flavourText: 'Lady Holsworth\'s glance travels from your neckwear to your face.',
+                            choices: [
+                                { id: 'apologise_withdraw', text: 'Apologise and make a discreet departure.', effects: { reputation: -5, relations: -3 }, flavorResponse: 'The incident is noted but not dwelt upon.' },
+                                { id: 'charming_explanation', text: 'Offer a self-deprecating explanation.', effects: { reputation: -3, relations: 5 }, flavorResponse: 'Your wit saves the evening.' }
+                            ]
+                        }
+                    ]
+                };
+            }
+            if (key === 'education') {
+                return {
+                    secondary: [
+                        { id: 'grammar_school', name: 'Grammar School', tier: 'secondary', socialImpact: 'Low-Medium', attributes: { performance: 8, relations: 2, record: 5, reputation: 2 }, keyAdvantage: 'Broad curriculum; solid academic base.', availableFor: ['second_division', 'first_division'] },
+                        { id: 'commercial_school', name: 'Commercial School', tier: 'secondary', socialImpact: 'Low', attributes: { performance: 5, relations: 0, record: 5, reputation: 0 }, keyAdvantage: 'Clerical efficiency; suitable for Second Division entry.', availableFor: ['second_division'] }
+                    ],
+                    clarendon: [
+                        { id: 'eton', name: 'Eton College', tier: 'clarendon', socialImpact: 'Very High', attributes: { performance: 5, relations: 20, record: 0, reputation: 15 }, keyAdvantage: 'Direct access to ministerial circles.', availableFor: ['first_division', 'special_appointment'] },
+                        { id: 'winchester', name: 'Winchester College', tier: 'clarendon', socialImpact: 'High', attributes: { performance: 15, relations: 5, record: 5, reputation: 10 }, keyAdvantage: 'Rigorous academic standing; the Scholar route.', availableFor: ['first_division', 'special_appointment'] },
+                        { id: 'westminster', name: 'Westminster School', tier: 'clarendon', socialImpact: 'Medium', attributes: { performance: 10, relations: 12, record: 3, reputation: 8 }, keyAdvantage: 'London-centric; close proximity to Parliament.', availableFor: ['first_division', 'special_appointment'] },
+                        { id: 'harrow', name: 'Harrow School', tier: 'clarendon', socialImpact: 'Very High', attributes: { performance: 5, relations: 18, record: 0, reputation: 12 }, keyAdvantage: 'Strong social networks.', availableFor: ['first_division', 'special_appointment'] }
+                    ],
+                    university: [
+                        { id: 'oxford', name: 'Oxford University', tier: 'university', socialImpact: 'Maximum', attributes: { performance: 15, relations: 20, record: 5, reputation: 15 }, keyAdvantage: 'The Old Boy network; required for top posts.', availableFor: ['first_division', 'special_appointment'] },
+                        { id: 'cambridge', name: 'Cambridge University', tier: 'university', socialImpact: 'Maximum', attributes: { performance: 20, relations: 15, record: 10, reputation: 10 }, keyAdvantage: 'Analytical/Mathematical focus; favoured by the Treasury.', availableFor: ['first_division', 'special_appointment'] }
+                    ]
+                };
+            }
+            if (key === 'etiquette') {
+                return { rules: [], positive: [] };
+            }
+            return null;
+        }
+
+        /* -------------------------------------------------------
+           PHASE: MAIN MENU
+           ------------------------------------------------------- */
+
+        function showMainMenu() {
+            _gameState.phase = 'main_menu';
+            var hasSave = SaveSystem.hasSave('autosave') ||
+                          SaveSystem.hasSave(0) ||
+                          SaveSystem.hasSave(1) ||
+                          SaveSystem.hasSave(2);
+
+            Dashboard.renderMainMenu(hasSave, {
+                onNewGame: function () { showCharacterCreation(); },
+                onLoadGame: function () { showLoadScreen(); }
+            });
+        }
+
+        /* -------------------------------------------------------
+           PHASE: CHARACTER CREATION
+           ------------------------------------------------------- */
+
+        function showCharacterCreation() {
+            _gameState.phase = 'char_creation';
+
+            Dashboard.renderCharacterCreation({
+                entryPaths: InteractionHandler.getEntryPaths(),
+                backgrounds: InteractionHandler.getBackgrounds(),
+                educationData: _gameData.education
+            }, function (creationData) {
+                startNewGame(creationData);
+            });
+        }
+
+        function startNewGame(creationData) {
+            // Initialise first so that _ranksData and _educationData are available
+            // before createNewPlayer is called.
+            InteractionHandler.init(
+                _gameState,
+                _gameData.ranks,
+                _gameData.events,
+                _gameData.education
+            );
+
+            _gameState.player = InteractionHandler.createNewPlayer(creationData);
+            _gameState.phase = 'gameplay';
+
+            Dashboard.showNotification(
+                'Welcome to the service, ' + creationData.playerName + '. The year is ' +
+                TurnManager.START_YEAR + '. Conduct yourself with propriety.',
+                'info'
+            );
+
+            renderGameplay();
+        }
+
+        /* -------------------------------------------------------
+           PHASE: GAMEPLAY
+           ------------------------------------------------------- */
+
+        function renderGameplay() {
+            var player = _gameState.player;
+            var actions = TurnManager.getAvailableActions(player, _gameData.ranks);
+
+            Dashboard.renderGameplay(player, actions, {
+                onAction: handleAction,
+                onEndSeason: handleEndSeason,
+                onSave: function () { showSaveScreen(); }
+            });
+        }
+
+        function handleAction(actionId) {
+            var result = InteractionHandler.handleAction(actionId);
+
+            if (!result.success) {
+                Dashboard.showNotification(result.message, 'warning');
+                return;
+            }
+
+            // Show result
+            var resultPanel = document.getElementById('result-panel');
+            if (resultPanel) { resultPanel.classList.remove('hidden'); }
+            Dashboard.renderResult(result.message, result.changes);
+
+            // Update stats display
+            Dashboard.updateStats(_gameState.player);
+
+            // Refresh action list (costs may have changed)
+            var player = _gameState.player;
+            var actions = TurnManager.getAvailableActions(player, _gameData.ranks);
+            Dashboard.renderActions(actions, player, handleAction);
+        }
+
+        function handleEndSeason() {
+            Dashboard.hideResultPanel();
+
+            InteractionHandler.handleEndSeason(
+                function onEvent(event, type) {
+                    _gameState.pendingEvent = event;
+                    _gameState.pendingEventType = type;
+                    _gameState.phase = 'event';
+                    Dashboard.renderEvent(event, handleEventChoice);
+                },
+                function onScrutiny(scrutinyResult, rankLabel) {
+                    _gameState.phase = 'scrutiny';
+                    Dashboard.renderScrutinyResult(scrutinyResult, rankLabel);
+
+                    var continueBtn = document.getElementById('scrutiny-continue-btn');
+                    if (continueBtn) {
+                        continueBtn.addEventListener('click', function () {
+                            afterScrutiny(scrutinyResult);
+                        });
+                    }
+                },
+                function onTurnAdvanced(turnInfo) {
+                    var player = _gameState.player;
+                    Dashboard.showNotification(
+                        turnInfo.newSeason + ', ' + turnInfo.newYear + '. The season turns.',
+                        'info'
+                    );
+                    renderGameplay();
+                },
+                function onGameOver(reason) {
+                    showGameOver(reason);
+                }
+            );
+        }
+
+        function handleEventChoice(choiceId) {
+            var event = _gameState.pendingEvent;
+            if (!event) { return; }
+
+            var result = InteractionHandler.handleEventChoice(event, choiceId);
+
+            // Show the event response
+            Dashboard.renderResult(result.message, result.changes);
+            Dashboard.hideEventPanel();
+
+            // Reveal result panel (it's within event area)
+            var resultPanel = document.getElementById('result-panel');
+            if (resultPanel) { resultPanel.classList.remove('hidden'); }
+
+            // Add a "Continue" button after event resolution
+            var continueDiv = document.createElement('div');
+            continueDiv.style.textAlign = 'center';
+            continueDiv.style.marginTop = '1rem';
+            var continueBtn = document.createElement('button');
+            continueBtn.className = 'continue-btn';
+            continueBtn.textContent = 'Continue';
+            continueBtn.addEventListener('click', function () {
+                continueDiv.remove();
+                Dashboard.hideResultPanel();
+                afterEvent();
+            });
+            continueDiv.appendChild(continueBtn);
+            resultPanel.appendChild(continueDiv);
+
+            // Clear pending event
+            _gameState.pendingEvent = null;
+            _gameState.pendingEventType = null;
+        }
+
+        function afterEvent() {
+            InteractionHandler.continueAfterEvent(
+                function onScrutiny(scrutinyResult, rankLabel) {
+                    _gameState.phase = 'scrutiny';
+                    Dashboard.renderScrutinyResult(scrutinyResult, rankLabel);
+                    var continueBtn = document.getElementById('scrutiny-continue-btn');
+                    if (continueBtn) {
+                        continueBtn.addEventListener('click', function () {
+                            afterScrutiny(scrutinyResult);
+                        });
+                    }
+                },
+                function onTurnAdvanced(turnInfo) {
+                    var player = _gameState.player;
+                    Dashboard.showNotification(
+                        turnInfo.newSeason + ', ' + turnInfo.newYear + '. The season turns.',
+                        'info'
+                    );
+                    renderGameplay();
+                },
+                function onGameOver(reason) {
+                    showGameOver(reason);
+                }
+            );
+        }
+
+        function afterScrutiny(scrutinyResult) {
+            var player = _gameState.player;
+
+            // Announce promotion if applicable
+            if (scrutinyResult.outcome === 'promoted') {
+                Dashboard.showNotification(
+                    'Promoted to ' + player.rankLabel + '! Congratulations.',
+                    'info'
+                );
+            } else if (scrutinyResult.outcome === 'demoted') {
+                Dashboard.showNotification(
+                    'You have been demoted. Your position in the service is diminished.',
+                    'warning'
+                );
+            } else if (scrutinyResult.outcome === 'scandal') {
+                showGameOver('A scandal has ended your career. The Permanent Secretary has requested your resignation.');
+                return;
+            }
+
+            var gameOver = TurnManager.checkGameOver(player);
+            if (gameOver.over) {
+                showGameOver(gameOver.reason);
+                return;
+            }
+
+            renderGameplay();
+        }
+
+        /* -------------------------------------------------------
+           PHASE: SAVE / LOAD
+           ------------------------------------------------------- */
+
+        function showSaveScreen() {
+            _gameState.phase = 'save_load';
+            var saves = SaveSystem.listSaves();
+            Dashboard.renderSaveLoadScreen(saves, 'save',
+                function (slot) {
+                    SaveSystem.saveGame(_gameState.player, slot);
+                    Dashboard.showNotification('Game saved to ' + (slot === 'autosave' ? 'Autosave' : 'Slot ' + (Number(slot) + 1)) + '.', 'info');
+                    renderGameplay();
+                },
+                function () {
+                    renderGameplay();
+                }
+            );
+        }
+
+        function showLoadScreen() {
+            _gameState.phase = 'save_load';
+            var saves = SaveSystem.listSaves();
+            Dashboard.renderSaveLoadScreen(saves, 'load',
+                function (slot) {
+                    var saved = SaveSystem.loadGame(slot);
+                    if (!saved || !saved.state) {
+                        Dashboard.showNotification('No save data found in that slot.', 'warning');
+                        return;
+                    }
+                    _gameState.player = saved.state;
+                    _gameState.phase = 'gameplay';
+
+                    InteractionHandler.init(
+                        _gameState,
+                        _gameData.ranks,
+                        _gameData.events,
+                        _gameData.education
+                    );
+
+                    Dashboard.showNotification(
+                        'Game loaded. Welcome back, ' + (_gameState.player.playerName || 'Clerk') + '.',
+                        'info'
+                    );
+                    renderGameplay();
+                },
+                function () {
+                    showMainMenu();
+                }
+            );
+        }
+
+        /* -------------------------------------------------------
+           PHASE: GAME OVER
+           ------------------------------------------------------- */
+
+        function showGameOver(reason) {
+            _gameState.phase = 'game_over';
+            Dashboard.renderGameOver(_gameState.player, reason, function () {
+                showMainMenu();
+            });
+        }
+
+        /* -------------------------------------------------------
+           INITIALISATION
+           ------------------------------------------------------- */
+
+        function init() {
+            loadData(function () {
+                showMainMenu();
+            });
+        }
+
+        // Start the game once the DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+    }());
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+{
+  "secondary": [
+    {
+      "id": "commercial_school",
+      "name": "Commercial School",
+      "tier": "secondary",
+      "socialImpact": "Low",
+      "attributes": { "performance": 5, "relations": 0, "record": 5, "reputation": 0 },
+      "keyAdvantage": "Clerical efficiency; suitable for Second Division entry.",
+      "availableFor": ["second_division"]
+    },
+    {
+      "id": "grammar_school",
+      "name": "Grammar School",
+      "tier": "secondary",
+      "socialImpact": "Low-Medium",
+      "attributes": { "performance": 8, "relations": 2, "record": 5, "reputation": 2 },
+      "keyAdvantage": "Broad curriculum; solid academic base.",
+      "availableFor": ["second_division", "first_division"]
+    }
+  ],
+  "clarendon": [
+    {
+      "id": "eton",
+      "name": "Eton College",
+      "tier": "clarendon",
+      "socialImpact": "Very High",
+      "attributes": { "performance": 5, "relations": 20, "record": 0, "reputation": 15 },
+      "keyAdvantage": "Direct access to ministerial circles.",
+      "availableFor": ["first_division", "special_appointment"]
+    },
+    {
+      "id": "winchester",
+      "name": "Winchester College",
+      "tier": "clarendon",
+      "socialImpact": "High",
+      "attributes": { "performance": 15, "relations": 5, "record": 5, "reputation": 10 },
+      "keyAdvantage": "Rigorous academic standing; the \"Scholar\" route.",
+      "availableFor": ["first_division", "special_appointment"]
+    },
+    {
+      "id": "westminster",
+      "name": "Westminster School",
+      "tier": "clarendon",
+      "socialImpact": "Medium",
+      "attributes": { "performance": 10, "relations": 12, "record": 3, "reputation": 8 },
+      "keyAdvantage": "London-centric; close proximity to Parliament.",
+      "availableFor": ["first_division", "special_appointment"]
+    },
+    {
+      "id": "harrow",
+      "name": "Harrow School",
+      "tier": "clarendon",
+      "socialImpact": "Very High",
+      "attributes": { "performance": 5, "relations": 18, "record": 0, "reputation": 12 },
+      "keyAdvantage": "Strong social networks; favoured by the Foreign Office set.",
+      "availableFor": ["first_division", "special_appointment"]
+    }
+  ],
+  "university": [
+    {
+      "id": "oxford",
+      "name": "Oxford University",
+      "tier": "university",
+      "socialImpact": "Maximum",
+      "attributes": { "performance": 15, "relations": 20, "record": 5, "reputation": 15 },
+      "keyAdvantage": "The \"Old Boy\" network; required for top posts.",
+      "availableFor": ["first_division", "special_appointment"],
+      "prerequisite": "clarendon_or_grammar"
+    },
+    {
+      "id": "cambridge",
+      "name": "Cambridge University",
+      "tier": "university",
+      "socialImpact": "Maximum",
+      "attributes": { "performance": 20, "relations": 15, "record": 10, "reputation": 10 },
+      "keyAdvantage": "Analytical/Mathematical focus; favoured by the Treasury.",
+      "availableFor": ["first_division", "special_appointment"],
+      "prerequisite": "clarendon_or_grammar"
+    }
+  ]
+}

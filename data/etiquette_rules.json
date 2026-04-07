@@ -1,0 +1,80 @@
+{
+  "rules": [
+    {
+      "id": "tie_formality",
+      "occasion": "Formal Dinner",
+      "requirement": "white_tie",
+      "violation": "black_tie",
+      "description": "White tie is mandatory at any formal dinner of consequence. Deviation is inexcusable.",
+      "penalty": { "reputation": -15, "relations": -8 }
+    },
+    {
+      "id": "ladies_rising",
+      "occasion": "Any Dinner",
+      "requirement": "stand_when_ladies_rise",
+      "description": "A gentleman always rises when ladies leave or enter the table.",
+      "penalty": { "reputation": -10 }
+    },
+    {
+      "id": "correct_fork",
+      "occasion": "Dinner",
+      "requirement": "correct_cutlery_sequence",
+      "description": "Cutlery is used from the outside in. Any deviation marks a man immediately.",
+      "penalty": { "reputation": -8 }
+    },
+    {
+      "id": "mourning_dress",
+      "occasion": "Court Mourning",
+      "requirement": "black_dress",
+      "description": "During periods of Court Mourning, appearance at any social function in coloured dress is a grave offence.",
+      "penalty": { "reputation": -20, "relations": -10, "record": -5 }
+    },
+    {
+      "id": "sealed_letter",
+      "occasion": "Letter of Introduction",
+      "requirement": "letter_must_remain_sealed",
+      "description": "A letter of introduction must be delivered sealed. To read it is a fundamental breach of gentlemanly etiquette.",
+      "penalty": { "reputation": -25, "relations": -15 }
+    },
+    {
+      "id": "club_conduct",
+      "occasion": "Club Visit",
+      "requirement": "silence_in_reading_room",
+      "description": "Conversation above a murmur in the reading room of any club is an unpardonable offence.",
+      "penalty": { "reputation": -5, "relations": -3 }
+    },
+    {
+      "id": "afternoon_tea_hours",
+      "occasion": "Afternoon Tea",
+      "requirement": "attend_between_3_and_5_30",
+      "description": "Calls are received between 3 and half-past 5 o'clock. Arriving outside these hours signals ignorance.",
+      "penalty": { "reputation": -5 }
+    }
+  ],
+  "positive": [
+    {
+      "id": "impeccable_dress",
+      "description": "Savile Row attire maintained immaculately.",
+      "bonus": { "reputation": 5 },
+      "wealthCost": 30
+    },
+    {
+      "id": "club_membership_reform",
+      "description": "Membership of the Reform Club, frequented by Liberal statesmen.",
+      "bonus": { "relations": 8, "reputation": 5 },
+      "wealthCost": 15
+    },
+    {
+      "id": "club_membership_athenaeum",
+      "description": "Membership of the Athenaeum, the resort of the intellectual establishment.",
+      "bonus": { "relations": 10, "performance": 3, "reputation": 8 },
+      "wealthCost": 20
+    },
+    {
+      "id": "hostess_cultivation",
+      "description": "Regular attendance at prominent hostesses' at-homes.",
+      "bonus": { "relations": 6, "reputation": 4 },
+      "wealthCost": 5
+    }
+  ]
+}
