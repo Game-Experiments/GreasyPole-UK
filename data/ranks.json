@@ -1,0 +1,52 @@
+[
+  {
+    "id": "junior_clerk",
+    "name": "Junior Clerk (Class I)",
+    "salary": 200,
+    "increment": 20,
+    "maxSalary": 500,
+    "responsibilities": "Copying, indexing, fetching messages.",
+    "promotionThreshold": 55,
+    "order": 0
+  },
+  {
+    "id": "senior_clerk",
+    "name": "Senior Clerk",
+    "salary": 600,
+    "increment": 25,
+    "maxSalary": 800,
+    "responsibilities": "Policy drafting, financial work, management.",
+    "promotionThreshold": 65,
+    "order": 1
+  },
+  {
+    "id": "principal_clerk",
+    "name": "Principal Clerk",
+    "salary": 850,
+    "increment": 50,
+    "maxSalary": 1000,
+    "responsibilities": "Managing a room or sub-department.",
+    "promotionThreshold": 74,
+    "order": 2
+  },
+  {
+    "id": "assistant_under_secretary",
+    "name": "Assistant Under-Secretary",
+    "salary": 1200,
+    "increment": 0,
+    "maxSalary": 1500,
+    "responsibilities": "Ministerial advice and implementation.",
+    "promotionThreshold": 83,
+    "order": 3
+  },
+  {
+    "id": "permanent_secretary",
+    "name": "Permanent Secretary",
+    "salary": 2000,
+    "increment": 0,
+    "maxSalary": 2500,
+    "responsibilities": "Departmental head; the club leader.",
+    "promotionThreshold": 9999,
+    "order": 4
+  }
+]

@@ -1,0 +1,372 @@
+{
+  "fixed": [
+    {
+      "id": "death_queen_victoria",
+      "year": 1901,
+      "season": "Winter",
+      "title": "Death of Queen Victoria",
+      "description": "Her Majesty Queen Victoria has passed from this world. The nation is plunged into mourning. All social engagements must be cancelled for the season.",
+      "flavourText": "A black-edged memorandum circulates through every department: 'It is desired that all officers of the Civil Service observe the appropriate period of Court Mourning.'",
+      "choices": [
+        {
+          "id": "observe_mourning",
+          "text": "Observe the full mourning period with solemn propriety.",
+          "effects": { "reputation": 5, "relations": 3, "record": 0 },
+          "flavorResponse": "Your discretion is noted by senior colleagues. A small mark of approval is entered against your name."
+        },
+        {
+          "id": "attend_gala",
+          "text": "Attend a private gala — surely one small gathering cannot matter.",
+          "effects": { "reputation": -15, "relations": -5, "record": -5 },
+          "flavorResponse": "Word reaches the Permanent Secretary's office. You are regarded as a man of questionable taste."
+        }
+      ]
+    },
+    {
+      "id": "boer_war_victory",
+      "year": 1902,
+      "season": "Summer",
+      "title": "Boer War: Peace of Vereeniging",
+      "description": "The protracted conflict in South Africa has finally ended. Departments attached to the War Office are overwhelmed with administrative work.",
+      "flavourText": "The corridors of Whitehall hum with a renewed sense of imperial purpose. Extra clerks are being drafted in.",
+      "choices": [
+        {
+          "id": "volunteer_overtime",
+          "text": "Volunteer for the special War Office administrative detail.",
+          "effects": { "performance": 10, "record": 5, "energy": -20 },
+          "flavorResponse": "Your dedication is rewarded with a commendation from the War Office. Your energy reserves are considerably depleted, however."
+        },
+        {
+          "id": "continue_normal",
+          "text": "Continue your ordinary duties. The matter does not concern your department.",
+          "effects": { "performance": 5 },
+          "flavorResponse": "Business proceeds as usual in your corner of Whitehall."
+        }
+      ]
+    },
+    {
+      "id": "liberal_landslide",
+      "year": 1906,
+      "season": "Spring",
+      "title": "Liberal Party Landslide",
+      "description": "The Liberals have swept into power with a great majority. The ministerial landscape shifts dramatically; your Tory patrons find themselves on the opposition benches.",
+      "flavourText": "The new Permanent Secretary — a man of decidedly Radical inclinations — surveys his department with fresh eyes.",
+      "choices": [
+        {
+          "id": "cultivate_liberals",
+          "text": "Discreetly cultivate relations with the new Liberal ministerial set.",
+          "effects": { "relations": 8, "record": -3 },
+          "flavorResponse": "You navigate the transition with pragmatic skill. Several old Tory connections quietly note your flexibility."
+        },
+        {
+          "id": "remain_neutral",
+          "text": "Maintain the strict neutrality expected of a permanent official.",
+          "effects": { "record": 5, "reputation": 3 },
+          "flavorResponse": "Your impartiality is remarked upon. You are the very model of a Northcote-Trevelyan official."
+        },
+        {
+          "id": "cling_to_tories",
+          "text": "Privately maintain your Tory connections, hoping for a swift return to power.",
+          "effects": { "relations": -10, "record": -5 },
+          "flavorResponse": "Your partisan inclinations do not go unnoticed. The new set regards you with suspicion."
+        }
+      ]
+    },
+    {
+      "id": "old_age_pensions",
+      "year": 1908,
+      "season": "Autumn",
+      "title": "Old Age Pensions Act",
+      "description": "Parliament has passed the Old Age Pensions Act. The Treasury and Local Government Board are inundated with administrative work of unprecedented scale.",
+      "flavourText": "Mountains of forms requiring verification arrive daily. The indexing room resembles a paper manufactory.",
+      "choices": [
+        {
+          "id": "lead_effort",
+          "text": "Take charge of organising the pensions administration in your sub-department.",
+          "effects": { "performance": 15, "record": 5, "energy": -25, "stress": 10 },
+          "flavorResponse": "Your capacity for organisation under pressure earns you the quiet respect of your superiors."
+        },
+        {
+          "id": "delegate",
+          "text": "Delegate the bulk of the work to junior clerks while you manage at a higher level.",
+          "effects": { "performance": 7, "relations": 5 },
+          "flavorResponse": "A competent approach, if not a heroic one. The junior clerks grumble, but the work gets done."
+        }
+      ]
+    },
+    {
+      "id": "parliament_act",
+      "year": 1911,
+      "season": "Summer",
+      "title": "The Parliament Act Crisis",
+      "description": "A constitutional crisis engulfs Westminster. The Lords have challenged the Commons; record-keeping and departmental correspondence are under intense scrutiny.",
+      "flavourText": "Every minute and memorandum may be called as evidence before a Select Committee. Fastidiousness is now a survival skill.",
+      "choices": [
+        {
+          "id": "meticulous_records",
+          "text": "Devote extra energy to ensuring all departmental records are immaculate.",
+          "effects": { "record": 10, "performance": 5, "energy": -20 },
+          "flavorResponse": "Your files are models of administrative propriety. Should any inquiry come, your department will be found blameless."
+        },
+        {
+          "id": "destroy_embarrassing",
+          "text": "Quietly destroy several embarrassing internal memoranda.",
+          "effects": { "record": -20, "heat": 15 },
+          "flavorResponse": "The destruction is noticed by a junior clerk. A shadow falls over your name."
+        }
+      ]
+    },
+    {
+      "id": "great_war_outbreak",
+      "year": 1914,
+      "season": "Autumn",
+      "title": "Outbreak of the Great War",
+      "description": "War has been declared. All departmental leave is suspended. The energy cost of all administrative work is doubled for the foreseeable future.",
+      "flavourText": "'Business as usual' proclaimed the Chancellor, but there is nothing usual about the feverish activity now overtaking Whitehall.",
+      "choices": [
+        {
+          "id": "embrace_duty",
+          "text": "Throw yourself into the war effort with full commitment.",
+          "effects": { "performance": 10, "record": 5, "reputation": 8, "energy": -30, "stress": 15 },
+          "flavorResponse": "Your dedication to King and Country is noted. The extra burden, however, taxes you considerably.",
+          "permanent": { "energyCostMultiplier": 1.5 }
+        },
+        {
+          "id": "steady_diligence",
+          "text": "Maintain steady, diligent service without overextension.",
+          "effects": { "performance": 5 },
+          "flavorResponse": "You soldier on as Whitehall adapts to the new reality.",
+          "permanent": { "energyCostMultiplier": 1.5 }
+        }
+      ]
+    },
+    {
+      "id": "sex_disqualification_act",
+      "year": 1919,
+      "season": "Spring",
+      "title": "Sex Disqualification (Removal) Act",
+      "description": "Women are now eligible to compete for Class I posts in the Civil Service. The old 'club' atmosphere of the Higher Division begins to shift.",
+      "flavourText": "Several senior officials are observed to be conspicuously uncomfortable at the sight of the new lady clerks presenting their examination credentials.",
+      "choices": [
+        {
+          "id": "embrace_change",
+          "text": "Welcome the new colleagues as a modernising and capable addition to the service.",
+          "effects": { "relations": 5, "reputation": 8, "record": 5 },
+          "flavorResponse": "You are regarded as a man of progressive sensibility. Certain reactionary colleagues view you with suspicion."
+        },
+        {
+          "id": "correct_resistance",
+          "text": "Make no comment but quietly ensure the traditional ways are maintained in your section.",
+          "effects": { "relations": -8, "record": -5 },
+          "flavorResponse": "Your obstructionism is eventually noticed. A note is appended to your conduct file."
+        },
+        {
+          "id": "neutral_stance",
+          "text": "Treat the matter as you would any other administrative change: with professional neutrality.",
+          "effects": { "record": 3 },
+          "flavorResponse": "An appropriately bureaucratic response. The matter proceeds without incident in your section."
+        }
+      ]
+    }
+  ],
+  "procedural": [
+    {
+      "id": "disgruntled_clerk",
+      "title": "The Disgruntled Clerk",
+      "description": "A subordinate has discovered an arithmetic error in one of your ledger entries from last quarter. He lingers at the door of your office with a meaningful expression.",
+      "flavourText": "Dobson clears his throat. 'I wonder, sir, if you might cast an eye over these figures. I believe there may be a... discrepancy.'",
+      "weight": 15,
+      "choices": [
+        {
+          "id": "bribe_clerk",
+          "text": "Press a sovereign into his palm and suggest the ledger entry was a fair copy of an earlier error.",
+          "effects": { "wealth": -20, "record": -8, "heat": 5 },
+          "flavorResponse": "Dobson pockets the coin with admirable discretion. The ledger entry is quietly corrected."
+        },
+        {
+          "id": "ignore_clerk",
+          "text": "Dismiss him with a look of bland incomprehension. The error was surely trivial.",
+          "effects": { "heat": 10, "record": -5 },
+          "flavorResponse": "Dobson withdraws, unconvinced. You notice him whispering with the other junior clerks."
+        },
+        {
+          "id": "correct_error",
+          "text": "Acknowledge the error, thank him formally, and submit a corrected return.",
+          "effects": { "record": 5, "relations": 3 },
+          "flavorResponse": "A minor embarrassment, but your transparency is appreciated. Dobson leaves looking mildly surprised."
+        },
+        {
+          "id": "patronage_silence",
+          "text": "Arrange a small promotion for Dobson to the copying room — a most convenient posting.",
+          "effects": { "relations": -5, "wealth": -10, "record": -3 },
+          "flavorResponse": "Dobson departs to his new post with suspicious alacrity. The matter is closed, at a price."
+        }
+      ]
+    },
+    {
+      "id": "anonymous_tip",
+      "title": "The Anonymous Tip",
+      "description": "A document from your desk has been leaked to The Times. The morning edition carries a leading article on internal Treasury deliberations.",
+      "flavourText": "The Permanent Secretary enters your room with a face of grey stone and a copy of The Times folded to the relevant page.",
+      "weight": 10,
+      "choices": [
+        {
+          "id": "find_culprit",
+          "text": "Initiate a discreet internal investigation to identify the source of the leak.",
+          "effects": { "performance": 5, "record": -5, "heat": -5, "relations": -3 },
+          "flavorResponse": "You narrow it down to two suspects but cannot act without firm evidence. The atmosphere in the room becomes frosty."
+        },
+        {
+          "id": "take_blame",
+          "text": "Accept full responsibility in the interests of departmental loyalty.",
+          "effects": { "record": -12, "relations": 10, "reputation": -5 },
+          "flavorResponse": "An act of considerable sacrifice. Your superiors are grateful. Your record, however, bears a permanent mark."
+        },
+        {
+          "id": "deflect_blame",
+          "text": "Suggest, with suitable regret, that the fault likely lies with the junior division.",
+          "effects": { "record": -5, "relations": -10, "heat": 5 },
+          "flavorResponse": "The junior clerks are furious. Several senior colleagues regard your manoeuvre with distaste."
+        }
+      ]
+    },
+    {
+      "id": "etiquette_gaffe",
+      "title": "The Etiquette Gaffe",
+      "description": "You have arrived at a formal dinner wearing a black tie. The occasion demands a white tie. The hostess — wife of the Permanent Secretary — has noticed.",
+      "flavourText": "Lady Holsworth's glance travels from your neckwear to your face with an expression of refined discomfort.",
+      "weight": 12,
+      "choices": [
+        {
+          "id": "apologise_withdraw",
+          "text": "Apologise to the hostess immediately and make a discreet, early departure.",
+          "effects": { "reputation": -5, "relations": -3 },
+          "flavorResponse": "Your swift departure limits the damage. The incident is noted but not dwelt upon."
+        },
+        {
+          "id": "brazen_out",
+          "text": "Proceed as though nothing is amiss. A confident man sets his own rules.",
+          "effects": { "reputation": -15, "relations": -8 },
+          "flavorResponse": "The gamble fails utterly. Your name is mentioned with a delicate shudder in three drawing rooms by Thursday."
+        },
+        {
+          "id": "charming_explanation",
+          "text": "Offer a charming, self-deprecating explanation — an urgent despatch detained you.",
+          "effects": { "reputation": -3, "relations": 5 },
+          "flavorResponse": "Lady Holsworth is partially appeased. Your wit saves the evening, if not your reputation entirely."
+        }
+      ]
+    },
+    {
+      "id": "chumocracy_opportunity",
+      "title": "The 'Chumocracy' Opportunity",
+      "description": "A donor to the ruling party has made contact through an intermediary. He requires a favourable interpretation of certain trade regulations in exchange for 'consideration'.",
+      "flavourText": "A note, unsigned, arrives at your private address: 'The matter of the Manchester cotton contracts might be viewed with flexibility. Our friend in the City is most appreciative of flexible minds.'",
+      "weight": 10,
+      "choices": [
+        {
+          "id": "accept_offer",
+          "text": "Accept the arrangement. The regulations are ambiguous; one's interpretation is one's own.",
+          "effects": { "wealth": 80, "record": -20, "heat": 20 },
+          "flavorResponse": "The funds arrive through a solicitor's account. The trade contract is awarded. You feel the greasy pole beneath your feet."
+        },
+        {
+          "id": "report_offer",
+          "text": "Report the approach to the Permanent Secretary.",
+          "effects": { "record": 15, "reputation": 10, "relations": -5 },
+          "flavorResponse": "The Permanent Secretary commends your integrity. An inquiry is quietly shelved. Several colleagues look at you oddly."
+        },
+        {
+          "id": "decline_silently",
+          "text": "Ignore the note. Burn it, and say nothing.",
+          "effects": { "record": 5 },
+          "flavorResponse": "Nothing further transpires. You sleep moderately well."
+        }
+      ]
+    },
+    {
+      "id": "health_crisis",
+      "title": "A Season of Ill Health",
+      "description": "The relentless pace of the office and the damp of a London winter have caught up with you. Your doctor recommends rest.",
+      "flavourText": "Dr Pemberton sets down his stethoscope with a grave expression. 'The strain of modern administrative life, I'm afraid. You must take the waters at Bath.'",
+      "weight": 8,
+      "choices": [
+        {
+          "id": "take_rest",
+          "text": "Take a fortnight's leave and recover your constitution at Bath.",
+          "effects": { "energy": 30, "stress": -20, "performance": -5 },
+          "flavorResponse": "You return refreshed and considerably improved. The work, alas, has piled up in your absence."
+        },
+        {
+          "id": "press_on",
+          "text": "Press on regardless. The service does not pause for sentiment.",
+          "effects": { "performance": -10, "stress": 15, "energy": -20 },
+          "flavorResponse": "You persist, but at a considerable cost to your constitution and your temper."
+        }
+      ]
+    },
+    {
+      "id": "tobacco_box_approach",
+      "title": "The Tobacco Box",
+      "description": "A building contractor seeking a government supply contract approaches you in the Travellers Club. He places a handsome tobacco box on the table between you with a meaningful smile.",
+      "flavourText": "'For a man of discernment,' he says, with a wink that would shame a pantomime villain.",
+      "weight": 8,
+      "choices": [
+        {
+          "id": "accept_box",
+          "text": "Accept the box with a nod. The tobacco within is most certainly not tobacco.",
+          "effects": { "wealth": 50, "record": -15, "heat": 15 },
+          "flavorResponse": "You pocket the screwed-up notes with a steady hand. The contractor departs satisfied."
+        },
+        {
+          "id": "decline_graciously",
+          "text": "Decline with a polite fiction about preferring a particular brand.",
+          "effects": { "record": 5, "heat": -5 },
+          "flavorResponse": "The contractor smiles thinly and departs. You order another glass of claret."
+        }
+      ]
+    },
+    {
+      "id": "country_house_intrigue",
+      "title": "Intrigue at the Country House",
+      "description": "You are invited to a weekend at a Buckinghamshire estate. Another guest — a rising ministerial aide — is clearly attempting to cultivate your influence.",
+      "flavourText": "Over billiards, Harrington-Smythe leans close: 'I say, old man, I wonder if a word from you to Under-Secretary Carrington might smooth a particular matter...'",
+      "weight": 10,
+      "choices": [
+        {
+          "id": "assist_request",
+          "text": "Agree to put in a discreet word. Such arrangements are the cement of the service.",
+          "effects": { "relations": 12, "record": -5 },
+          "flavorResponse": "The favour is done. Harrington-Smythe is effusively grateful. You have accumulated a useful obligation."
+        },
+        {
+          "id": "defer_politely",
+          "text": "Express warm interest but commit to nothing. The weekend proceeds pleasantly.",
+          "effects": { "relations": 5 },
+          "flavorResponse": "A diplomatic response. Harrington-Smythe is mildly disappointed but does not press the matter."
+        },
+        {
+          "id": "decline_firmly",
+          "text": "Decline with polite firmness. The impartiality of the service must be maintained.",
+          "effects": { "record": 8, "relations": -5, "reputation": 3 },
+          "flavorResponse": "Your principled stance earns a degree of respect. Harrington-Smythe calls you a prig under his breath."
+        }
+      ]
+    },
+    {
+      "id": "examination_result",
+      "title": "Results of the Competitive Examination",
+      "description": "The Civil Service Commission has published the results of the competitive examination. Your placement in the list will determine your initial standing.",
+      "flavourText": "The list is posted in the entrance hall. Your fingers trace the columns of names until they find your own.",
+      "weight": 0,
+      "choices": [
+        {
+          "id": "high_marks",
+          "text": "You have placed in the first division of the examination.",
+          "effects": { "performance": 10, "reputation": 8, "record": 5 },
+          "flavorResponse": "Congratulations circulate through the department. 'A man of real ability,' the Principal Clerk remarks."
+        }
+      ]
+    }
+  ]
+}
